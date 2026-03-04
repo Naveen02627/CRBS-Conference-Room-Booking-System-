@@ -6,9 +6,11 @@ import lombok.*;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,6 +18,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Builder
+@EntityListeners(AuditingEntityListener.class)
 public class BookingRequest {
 
     @Id
@@ -24,12 +27,18 @@ public class BookingRequest {
 
     private Long userId;
     private String hallId;
-
     private String purpose;
 
-    private int slotId;
-    private LocalDate requestedDate;
 
+    @ElementCollection
+    @CollectionTable(
+            name = "booking_request_slots",
+            joinColumns = @JoinColumn(name = "booking_request_id")
+    )
+    @Column(name = "slot_id")
+    private List<Integer> slotIds;
+
+    private LocalDate requestedDate;
 
     @Enumerated(EnumType.STRING)
     private Status status;

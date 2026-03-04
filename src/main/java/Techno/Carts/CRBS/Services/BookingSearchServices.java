@@ -53,6 +53,8 @@ public class BookingSearchServices {
                             .hallId(hall.getId())
                             .hallName(hall.getHallName())
                             .address(hall.getLocation().getAddress())
+                            .city(hall.getLocation().getCity())
+                            .state(hall.getLocation().getState())
                             .bookedSlots(bookedSlotIds)
                             .capacity(hall.getCapacity())
                             .price(hall.getPrice())

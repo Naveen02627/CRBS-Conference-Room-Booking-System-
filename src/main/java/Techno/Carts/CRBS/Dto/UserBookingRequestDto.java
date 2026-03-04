@@ -7,6 +7,7 @@ import lombok.Data;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
@@ -27,8 +28,7 @@ public class UserBookingRequestDto {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate requestedDate;
 
-    @NotNull(message = "Select One Slot")
-    private int slot;
+    private List<Integer> slot;
 
     @NotBlank(message = "Purpose is required")
     private String purpose;

@@ -15,6 +15,8 @@ public class HallSearchResponseDto {
     private String hallName;
     private String hallId;
     private String address;
+    private String state;
+    private String city;
     private String imageUrl;
     private double price;
     private String description;

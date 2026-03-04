@@ -1,5 +1,4 @@
 package Techno.Carts.CRBS.Security;
-
 import Techno.Carts.CRBS.Entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -17,7 +16,6 @@ public class JwtService {
             "mySuperSecretKeyMySuperSecretKeyMySuperSecretKey1234567890";
 
     private SecretKey getKey() {
-
         return Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
     }
 
@@ -25,6 +23,7 @@ public class JwtService {
         return Jwts.builder()
                 .setSubject(user.getUsername())
                 .claim("userId", user.getId())
+                .claim("role", user.getRole().name())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 86400000))
                 .signWith(getKey())
@@ -39,6 +38,10 @@ public class JwtService {
         return extractAllClaims(token).get("userId", Long.class);
     }
 
+    public String extractRole(String token) {
+        return extractAllClaims(token).get("role", String.class);
+    }
+
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getKey())
@@ -46,4 +49,16 @@ public class JwtService {
                 .parseClaimsJws(token)
                 .getBody();
     }
+    public boolean isTokenValid(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(getKey())
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }
+

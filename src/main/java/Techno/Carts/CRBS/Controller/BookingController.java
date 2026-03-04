@@ -24,7 +24,7 @@ public class BookingController {
 
         return bookingService.requestToHOD(userBookingRequestDto);
     }
-    @GetMapping("/pendingRequestHOD")
+    @GetMapping("/pendingrequestHOD")
     public ResponseEntity<List<BookingRequest>> getAllPendingRequest(){
 
         return bookingService.HodPendingRequest();
@@ -34,31 +34,31 @@ public class BookingController {
         return bookingService.acceptByHod(id);
     }
 
-    @PostMapping("/HODReject")
-    public ResponseEntity<?> requestRejectedHOD(
-            @RequestBody HodDecisionDto dto) {
-
-        return bookingService.rejectedByHOD(
-                dto.getRequestId(),
-                dto.getRemark()
-        );
-    }
-
-
-    @PostMapping("/ADMINAccept")
-    public ResponseEntity<?> requestAcceptedByAdmin(@RequestBody Long id){
-        return bookingService.acceptedByAdmin(id);
-    }
-
-    @PostMapping("/ADMINReject")
-    public ResponseEntity<?> requestRejectedByAdmin(@RequestBody HodDecisionDto dto ){
-        return bookingService.rejectedByAdmin(dto.getRequestId(), dto.getRemark());
-    }
-
-    @GetMapping("/pendingRequestADMIN")
-    public ResponseEntity<List<BookingRequest>> getListOfAdminPending(){
-        return bookingService.AdminPendingRequest();
-    }
-
+//    @PostMapping("/HODReject")
+//    public ResponseEntity<?> requestRejectedHOD(
+//            @RequestBody HodDecisionDto dto) {
+//
+//        return bookingService.rejectedByHOD(
+//                dto.getRequestId(),
+//                dto.getRemark()
+//        );
+//    }
+//
+//
+//    @PostMapping("/ADMINAccept")
+//    public ResponseEntity<?> requestAcceptedByAdmin(@RequestBody Long id){
+//        return bookingService.acceptedByAdmin(id);
+//    }
+//
+//    @PostMapping("/ADMINReject")
+//    public ResponseEntity<?> requestRejectedByAdmin(@RequestBody HodDecisionDto dto ){
+//        return bookingService.rejectedByAdmin(dto.getRequestId(), dto.getRemark());
+//    }
+//
+//    @GetMapping("/pendingrequestADMIN")
+//    public ResponseEntity<List<BookingRequest>> getListOfAdminPending(){
+//        return bookingService.AdminPendingRequest();
+//    }
+//
 
 }

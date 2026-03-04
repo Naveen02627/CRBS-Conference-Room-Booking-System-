@@ -1,5 +1,6 @@
 package Techno.Carts.CRBS.Security;
 
+
 import Techno.Carts.CRBS.Entity.User;
 import Techno.Carts.CRBS.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,8 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CustomUserDetailService
-        implements UserDetailsService {
+public class CustomUserDetailService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
@@ -26,7 +26,8 @@ public class CustomUserDetailService
         return new CustomUserDetails(
                 user.getId(),
                 user.getUsername(),
-                user.getPassword()
+                user.getPassword(),
+                user.getRole().name()
         );
     }
 }
