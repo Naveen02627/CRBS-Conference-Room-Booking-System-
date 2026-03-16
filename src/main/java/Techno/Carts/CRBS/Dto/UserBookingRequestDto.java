@@ -1,5 +1,6 @@
 package Techno.Carts.CRBS.Dto;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,21 +16,20 @@ import jakarta.validation.constraints.NotNull;
 import lombok.NoArgsConstructor;
 
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class UserBookingRequestDto {
 
-    @NotBlank(message = "Hall ID is required")
+@Builder
+@Data
+public class UserBookingRequestDto {
+    @NotBlank
     private String hallId;
 
-    @NotNull(message = "Requested date and time is required")
+    @NotNull
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate requestedDate;
 
+    @NotEmpty(message = "At least one slot must be selected")
     private List<Integer> slot;
 
-    @NotBlank(message = "Purpose is required")
+    @NotBlank
     private String purpose;
 }

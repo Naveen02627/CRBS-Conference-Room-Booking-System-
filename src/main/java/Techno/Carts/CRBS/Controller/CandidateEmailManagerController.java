@@ -1,6 +1,7 @@
 package Techno.Carts.CRBS.Controller;
 
 import Techno.Carts.CRBS.Entity.EmailDataSet;
+import Techno.Carts.CRBS.Entity.User;
 import Techno.Carts.CRBS.Services.ManageCandidateEmail;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.RequestEntity;
@@ -27,5 +28,10 @@ public class CandidateEmailManagerController {
     @GetMapping("/all")
     public ResponseEntity<List<EmailDataSet>> showAllCandidate(){
         return manageCandidateEmail.getAll();
+
     }
+//    @PostMapping("/addCandidate")
+//    public ResponseEntity<?> addNewCandidate(@RequestBody User user){
+//        return manageCandidateEmail.addCandidate(user);
+//    }
 }

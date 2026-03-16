@@ -1,7 +1,9 @@
 package Techno.Carts.CRBS.Services;
 
 import Techno.Carts.CRBS.Entity.EmailDataSet;
+import Techno.Carts.CRBS.Entity.User;
 import Techno.Carts.CRBS.Repository.EmailDataSetRepository;
+import Techno.Carts.CRBS.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -17,6 +19,7 @@ import java.util.Optional;
 public class ManageCandidateEmail {
 
     private final EmailDataSetRepository emailDataSetRepository;
+    private final UserRepository userRepository;
 
     public ResponseEntity<EmailDataSet> addNewEmail(String email) {
 
@@ -48,4 +51,8 @@ public class ManageCandidateEmail {
         }
         return ResponseEntity.of(Optional.of(list));
     }
+//    public ResponseEntity<?> addCandidate(User user) {
+//        userRepository.save(user);
+//        return ResponseEntity.status(HttpStatus.CREATED).build();
+//    }
 }
