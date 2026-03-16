@@ -63,7 +63,7 @@ public class JWTService {
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 // Here using 24 hours – adjust to your needs
-                .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 Hr
                 .signWith(getSigningKey())           // modern & type-safe way
                 .compact();
     }
@@ -100,6 +100,7 @@ public class JWTService {
 
 
     public String getSecretKeyForDebug() {
+
         return secretKey;
     }
 }

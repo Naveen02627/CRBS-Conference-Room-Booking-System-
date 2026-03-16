@@ -1,7 +1,10 @@
 package Techno.Carts.CRBS.newSecurity;
 
+import Techno.Carts.CRBS.Entity.User;
+import Techno.Carts.CRBS.Entity.UserPrincipal;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,36 +34,49 @@ public class JwtFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
 
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+        String token = null;
 
-        String token = authHeader.substring(7);
-
-        try {
-            String username = jwtService.extractUsername(token);
-
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-                // Simple validation – improve later if needed
-                if (jwtService.isTokenValid(token,username)) {
-
-                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                            userDetails,
-                            null,
-                            userDetails.getAuthorities()
-                    );
-
-                    auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(auth);
+        // 1. First try cookie (this is what we want for browser)
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("JWT_TOKEN".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                    break;
                 }
             }
-        } catch (Exception e) {
-            // Invalid/expired token → just continue (will be 401 later)
+        }
+
+        // 2. Fallback: Bearer header (for Postman, mobile, testing)
+        if (token == null) {
+            String authHeader = request.getHeader("Authorization");
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                token = authHeader.substring(7);
+            }
+        }
+
+        if (token != null) {
+            try {
+                String username = jwtService.extractUsername(token);
+
+                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+                    // FIXED: Now correctly passing User object
+                    User user = ((UserPrincipal) userDetails).getUser(); // assuming UserPrincipal has getUser()
+                    if (jwtService.isTokenValid(token, user.getUsername())) {
+
+                        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                                userDetails, null, userDetails.getAuthorities());
+
+                        auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(auth);
+                    }
+                }
+            } catch (Exception e) {
+                // Invalid token → continue without authentication
+            }
         }
 
         filterChain.doFilter(request, response);

@@ -27,43 +27,44 @@ public class AuthController {
 //    private final JwtService jwtService;
 //
 //
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDto request, HttpServletResponse response) {
+@PostMapping("/login")
+public ResponseEntity<?> login(@RequestBody LoginRequestDto request, HttpServletResponse response) {
 
+    String token = authService.verify(request);
 
-
-        String token = authService.verify(request);
-
-//        ResponseCookie cookie = ResponseCookie.from("JWT_TOKEN", token)
-//                .httpOnly(true)
-//                .secure(true) // true for HTTPS (ngrok)
-//                .path("/")
-//                .maxAge(24 * 60 * 60) // 1 day
-//                .sameSite("None")     // required for cross-origin
-//                .build();
-//
-//        response.addHeader("Set-Cookie", cookie.toString());
-        if(token == null) {
-            return ResponseEntity.ok("fail to login");
-        }
-
-        return ResponseEntity.ok(token);
-
+    if (token == null || token.equals("Not Authenticated")) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
     }
+
+    // ==================== COOKIE SETUP (This is what you want) ====================
+    ResponseCookie jwtCookie = ResponseCookie.from("JWT_TOKEN", token)
+            .httpOnly(true)           // ← prevents XSS
+            .secure(false)            // ← set true in production (HTTPS)
+            .path("/")                // available everywhere
+            .maxAge(60 * 60)          // 1 hour (better than 10 hours or 24h)
+            .sameSite("Lax")          // "Strict" is safer, "None" only if cross-origin
+            .build();
+
+    response.addHeader("Set-Cookie", jwtCookie.toString());
+    // ============================================================================
+
+    // Optional: return nice JSON response
+    return ResponseEntity.ok()
+            .body(Map.of("message", "Login successful", "username", request.getUsername()));
+}
 //
-//    @PostMapping("/logout")
-//    public ResponseEntity<String> logout(HttpServletResponse response) {
-//
-//        Cookie cookie = new Cookie("JWT_TOKEN", null);
-//        cookie.setHttpOnly(true);
-//        cookie.setSecure(true); // true in production (HTTPS)
-//        cookie.setPath("/");
-//        cookie.setMaxAge(60*60*60); // 🔥 DELETE COOKIE
-//
-//        response.addCookie(cookie);
-//
-//        return ResponseEntity.ok("Logged out successfully");
-//    }
+@PostMapping("/logout")
+public ResponseEntity<?> logout(HttpServletResponse response) {
+
+    ResponseCookie deleteCookie = ResponseCookie.from("JWT_TOKEN", "")
+            .path("/")
+            .maxAge(0)
+            .build();
+
+    response.addHeader("Set-Cookie", deleteCookie.toString());
+
+    return ResponseEntity.ok("Logged out successfully");
+}
 //
 //
     @PostMapping("/signup")
