@@ -42,6 +42,6 @@ public class BookingHistory {
 
     private LocalDate createdAt;
 
-    @LastModifiedDate
+    @CreatedDate
     private LocalDate lastUpdate;
 }

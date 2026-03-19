@@ -57,6 +57,7 @@ public class JWTService {
         // You can add more claims if needed, e.g.:
          claims.put("role", user.getRole());
         claims.put("Id", user.getId());
+        claims.put("departmentId",user.getDepartmentId());
 
         return Jwts.builder()
                 .setClaims(claims)

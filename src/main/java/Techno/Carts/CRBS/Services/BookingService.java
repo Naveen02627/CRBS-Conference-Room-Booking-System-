@@ -1,6 +1,7 @@
 package Techno.Carts.CRBS.Services;
 
 import Techno.Carts.CRBS.Dto.UserBookingRequestDto;
+import Techno.Carts.CRBS.Dto.requestInfoDto;
 import Techno.Carts.CRBS.Entity.*;
 import Techno.Carts.CRBS.Repository.BookingHistoryRepository;
 import Techno.Carts.CRBS.Repository.BookingRequestRepository;
@@ -174,7 +175,7 @@ public class BookingService {
 
 
 //********************************************************************************//
-    public ResponseEntity<?> rejectedByHOD(Long requestId, String remark) {
+    public ResponseEntity<?> rejectedByHOD(Long requestId) {
         log.info("Rejected request with id: {}", requestId);
         BookingRequest request = bookingRequestRepository.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Booking request not found"));
@@ -192,7 +193,7 @@ public class BookingService {
 
         SaveToBookingHistory(
                 "REJECTED",
-                remark,
+                " ",
                 hodUserId,
                 request
         );
@@ -266,6 +267,27 @@ public class BookingService {
         }
         log.info("Admin pending requests are  showing now");
         return ResponseEntity.of(Optional.of(list));
+    }
+
+    public ResponseEntity<requestInfoDto> getRequestInfo(long requestId) {
+        BookingRequest req = bookingRequestRepository.findById(requestId)
+                .orElseThrow(() -> {
+                    log.error("Booking request with id: {} not found", requestId);
+                    return new RuntimeException("Booking request not found");
+                });
+        Hall hall = hallRepository.findById(req.getHallId()).orElseThrow(
+                () ->{
+                    log.error("Hall with id: {} not found", req.getHallId());
+                    return new RuntimeException("Hall with id: "+req.getHallId()+" not found");
+                });
+        requestInfoDto dto = requestInfoDto.builder()
+                .slots(req.getSlotIds())
+                .purpose(req.getPurpose())
+                .Address(hall.getLocation().getAddress())  // Note: address lowercase
+                .build();
+        return ResponseEntity.ok(dto);
+
+
     }
 //    private void addSlotToHall(BookingRequest bookingrequest) {
 //

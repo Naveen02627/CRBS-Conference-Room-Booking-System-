@@ -70,4 +70,7 @@ public class UserPrincipal implements UserDetails {
     public Role getRole() {
         return user.getRole();
     }
+    public long getDepartment() {
+        return user.getDepartmentId();
+    }
 }

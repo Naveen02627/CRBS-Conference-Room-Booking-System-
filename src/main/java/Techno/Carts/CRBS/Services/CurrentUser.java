@@ -26,4 +26,23 @@ public class CurrentUser {
         }
         throw new IllegalStateException("No authenticated user found");
     }
+    public long getDepartmentId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalStateException("No authenticated user found");
+        }
+
+        Object principal = authentication.getPrincipal();
+
+        if (principal instanceof UserPrincipal userPrincipal) {
+            Long deptId = userPrincipal.getDepartment();   // or however you named it
+            if (deptId == null) {
+                throw new IllegalStateException("DepartmentId is null in UserPrincipal");
+            }
+            return deptId;
+        }
+
+        throw new IllegalStateException("Principal is not UserPrincipal");
+    }
 }
