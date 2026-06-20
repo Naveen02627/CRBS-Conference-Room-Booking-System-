@@ -7,4 +7,16 @@
 
 ### OS Files ###
 .DS_Store
-Thumbs.db
+
+Thumbs.
+# IntelliJ
+.idea/
+
+# Maven
+target/
+
+# Environment
+.env
+
+# Compiled files
+*.class
